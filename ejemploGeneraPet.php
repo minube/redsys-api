@@ -1,8 +1,9 @@
 <?php
 
 	// Se incluye la librería
-	include 'apiRedsys.php';
+	//include 'apiRedsys.php';
 	// Se crea Objeto
+
 	$miObj = new RedsysAPI;
 
 	// Valores de entrada

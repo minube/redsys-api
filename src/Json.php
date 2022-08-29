@@ -1,4 +1,6 @@
 <?php
+	namespace Redsys;
+
 	/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 	/**
@@ -129,7 +131,7 @@
 		 *                                   bubble up with an error, so all return values
 		 *                                   from encode() should be checked with isError()
 		 */
-		function Services_JSON( $use = 0 ) {
+		public function Services_JSON( $use = 0 ) {
 			$this->use = $use;
 		}
 
@@ -142,7 +144,7 @@
 		 * @return   string  JSON-formatted name-value pair, like '"name":value'
 		 * @access   private
 		 */
-		function name_value( $name, $value ) {
+		public function name_value( $name, $value ) {
 			$encoded_value = $this->encode( $value );
 
 			if ( Services_JSON::isError( $encoded_value ) ) {
@@ -163,7 +165,7 @@
 		 * @return   mixed   JSON string representation of input var or an error if a problem occurs
 		 * @access   public
 		 */
-		function encode( $var ) {
+		public function encode( $var ) {
 			switch ( gettype( $var ) ) {
 				case 'boolean':
 					return $var ? 'true' : 'false';
@@ -350,7 +352,7 @@
 		 * @return   string  UTF-16 character
 		 * @access   private
 		 */
-		function utf82utf16( $utf8 ) {
+		public function utf82utf16( $utf8 ) {
 			// oh please oh please oh please oh please oh please
 			if ( function_exists( 'mb_convert_encoding' ) ) {
 				return mb_convert_encoding( $utf8, 'UTF-16', 'UTF-8' );
@@ -380,7 +382,7 @@
 		/**
 		 * @todo Ultimately, this should just call PEAR::isError()
 		 */
-		function isError( $data, $code = null ) {
+		public function isError( $data, $code = null ) {
 			if ( class_exists( 'pear' ) ) {
 				return PEAR::isError( $data, $code );
 			} elseif ( is_object( $data ) && ( get_class( $data ) == 'services_json_error' || is_subclass_of( $data, 'services_json_error' ) ) ) {
@@ -402,7 +404,7 @@
 		 *                   in ASCII or UTF-8 format!
 		 * @access   public
 		 */
-		function decode( $str ) {
+		public function decode( $str ) {
 			$str = $this->reduce_string( $str );
 
 			switch ( strtolower( $str ) ) {
@@ -713,7 +715,7 @@
 		 * @return   string  string value stripped of comments and whitespace
 		 * @access   private
 		 */
-		function reduce_string( $str ) {
+		public function reduce_string( $str ) {
 			$str = preg_replace( array(
 
 				// eliminate single line comments in '// ...' form
@@ -742,7 +744,7 @@
 		 * @return   string  UTF-8 character
 		 * @access   private
 		 */
-		function utf162utf8( $utf16 ) {
+		public function utf162utf8( $utf16 ) {
 			// oh please oh please oh please oh please oh please
 			if ( function_exists( 'mb_convert_encoding' ) ) {
 				return mb_convert_encoding( $utf16, 'UTF-8', 'UTF-16' );

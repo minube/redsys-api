@@ -1,45 +1,31 @@
 <?php
-	/**
-	 * NOTA SOBRE LA LICENCIA DE USO DEL SOFTWARE
-	 *
-	 * El uso de este software está sujeto a las Condiciones de uso de software que
-	 * se incluyen en el paquete en el documento "Aviso Legal.pdf". También puede
-	 * obtener una copia en la siguiente url:
-	 * http://www.redsys.es/wps/portal/redsys/publica/areadeserviciosweb/descargaDeDocumentacionYEjecutables
-	 *
-	 * Redsys es titular de todos los derechos de propiedad intelectual e industrial
-	 * del software.
-	 *
-	 * Quedan expresamente prohibidas la reproducción, la distribución y la
-	 * comunicación pública, incluida su modalidad de puesta a disposición con fines
-	 * distintos a los descritos en las Condiciones de uso.
-	 *
-	 * Redsys se reserva la posibilidad de ejercer las acciones legales que le
-	 * correspondan para hacer valer sus derechos frente a cualquier infracción de
-	 * los derechos de propiedad intelectual y/o industrial.
-	 *
-	 * Redsys Servicios de Procesamiento, S.L., CIF B85955367
-	 */
+	namespace Redsys;
 
-	include 'json.php';
-	include 'hmac.php';
-	if ( !defined( 'PHP_VERSION_ID' ) ) {
-		$version = explode( '.', PHP_VERSION ); //5.2.7 ->  50207       5.5.28 -> 50528
-		define( 'PHP_VERSION_ID', ( $version[ 0 ] * 10000 + $version[ 1 ] * 100 + $version[ 2 ] ) );
-	}
 
-	class RedsysAPI {
+	class ApiRedsys {
 
 		/******  Array de DatosEntrada ******/
 		var $vars_pay = array();
 
+		/**
+		 * ApiRedsys constructor.
+		 * @param array $vars_pay
+		 */
+		public function __construct() {
+			if ( !defined( 'PHP_VERSION_ID' ) ) {
+				$version = explode( '.', PHP_VERSION ); //5.2.7 ->  50207       5.5.28 -> 50528
+				define( 'PHP_VERSION_ID', ( $version[ 0 ] * 10000 + $version[ 1 ] * 100 + $version[ 2 ] ) );
+			}
+		}
+
+
 		/******  Set parameter ******/
-		function setParameter( $key, $value ) {
+		public function setParameter( $key, $value ) {
 			$this->vars_pay[ $key ] = $value;
 		}
 
 		/******  Get parameter ******/
-		function getParameter( $key ) {
+		public function getParameter( $key ) {
 			return $this->vars_pay[ $key ];
 		}
 
@@ -50,7 +36,7 @@
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
-		function createMerchantSignature( $key ) {
+		public function createMerchantSignature( $key ) {
 			// Se decodifica la clave Base64
 			$key = $this->decodeBase64( $key );
 			// Se genera el parámetro Ds_MerchantParameters
@@ -64,13 +50,13 @@
 			return $this->encodeBase64( $res );
 		}
 
-		function decodeBase64( $data ) {
+		public function decodeBase64( $data ) {
 			$data = base64_decode( $data );
 
 			return $data;
 		}
 
-		function createMerchantParameters() {
+		public function createMerchantParameters() {
 			// Se transforma el array de datos en un objeto Json
 			$json = $this->arrayToJson();
 
@@ -79,7 +65,7 @@
 		}
 
 		/******  Convertir Array en Objeto JSON ******/
-		function arrayToJson() {
+		public function arrayToJson() {
 			if ( PHP_VERSION_ID < 50200 ) {
 				$json = $this->json_encode4( $this->vars_pay );
 			} else {
@@ -89,20 +75,20 @@
 			return $json;
 		}
 
-		function json_encode4( $data ) {
+		public function json_encode4( $data ) {
 			$json = new Services_JSON();
 
 			return $json->encode( $data );
 		}
 
-		function encodeBase64( $data ) {
+		public function encodeBase64( $data ) {
 			$data = base64_encode( $data );
 
 			return $data;
 		}
 
 		/******  3DES Function  ******/
-		function encrypt_3DES( $message, $key ) {
+		public function encrypt_3DES( $message, $key ) {
 			// Se establece un IV por defecto
 			$bytes = array(
 				0,
@@ -123,7 +109,7 @@
 		}
 
 		/******  Obtener Número de pedido ******/
-		function getOrder() {
+		public function getOrder() {
 			$numPedido = "";
 			if ( empty( $this->vars_pay[ 'DS_MERCHANT_ORDER' ] ) ) {
 				$numPedido = $this->vars_pay[ 'Ds_Merchant_Order' ];
@@ -142,7 +128,7 @@
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
 		/******  MAC Function ******/
-		function mac256( $ent, $key ) {
+		public function mac256( $ent, $key ) {
 			if ( PHP_VERSION_ID < 50102 ) {
 				$res = hash_hmac4( 'sha256', $ent, $key, true );
 			} else {
@@ -152,7 +138,7 @@
 			return $res;
 		}
 
-		function decodeMerchantParameters( $datos ) {
+		public function decodeMerchantParameters( $datos ) {
 			// Se decodifican los datos Base64
 			$decodec = $this->base64_url_decode( $datos );
 			// Los datos decodificados se pasan al array de datos
@@ -161,12 +147,12 @@
 			return $decodec;
 		}
 
-		function base64_url_decode( $input ) {
+		public function base64_url_decode( $input ) {
 			return base64_decode( strtr( $input, '-_', '+/' ) );
 		}
 
 		/******  Convertir String en Array ******/
-		function stringToArray( $datosDecod ) {
+		public function stringToArray( $datosDecod ) {
 			if ( PHP_VERSION_ID < 50200 ) {
 				$this->vars_pay = $this->json_decode4( $datosDecod );
 			} else {
@@ -183,13 +169,13 @@
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
 		/******  JSON Encode Functions (PHP4) ******/
-		function json_decode4( $data ) {
+		public function json_decode4( $data ) {
 			$json = new Services_JSON();
 
 			return $json->decode( $data );
 		}
 
-		function createMerchantSignatureNotif( $key, $datos ) {
+		public function createMerchantSignatureNotif( $key, $datos ) {
 			// Se decodifica la clave Base64
 			$key = $this->decodeBase64( $key );
 			// Se decodifican los datos Base64
@@ -206,7 +192,7 @@
 		}
 
 		/******  Obtener Número de pedido ******/
-		function getOrderNotif() {
+		public function getOrderNotif() {
 			$numPedido = "";
 			if ( empty( $this->vars_pay[ 'Ds_Order' ] ) ) {
 				$numPedido = $this->vars_pay[ 'DS_ORDER' ];
@@ -218,12 +204,12 @@
 		}
 
 		/******  Base64 Functions  ******/
-		function base64_url_encode( $input ) {
+		public function base64_url_encode( $input ) {
 			return strtr( base64_encode( $input ), '+/', '-_' );
 		}
 
 		/******  Notificaciones SOAP ENTRADA ******/
-		function createMerchantSignatureNotifSOAPRequest( $key, $datos ) {
+		public function createMerchantSignatureNotifSOAPRequest( $key, $datos ) {
 			// Se decodifica la clave Base64
 			$key = $this->decodeBase64( $key );
 			// Se obtienen los datos del Request
@@ -237,7 +223,7 @@
 			return $this->encodeBase64( $res );
 		}
 
-		function getRequestNotifSOAP( $datos ) {
+		public function getRequestNotifSOAP( $datos ) {
 			$posReqIni = strrpos( $datos, "<Request" );
 			$posReqFin = strrpos( $datos, "</Request>" );
 			$tamReqFin = strlen( "</Request>" );
@@ -245,7 +231,7 @@
 			return substr( $datos, $posReqIni, ( $posReqFin + $tamReqFin ) - $posReqIni );
 		}
 
-		function getOrderNotifSOAP( $datos ) {
+		public function getOrderNotifSOAP( $datos ) {
 			$posPedidoIni = strrpos( $datos, "<Ds_Order>" );
 			$tamPedidoIni = strlen( "<Ds_Order>" );
 			$posPedidoFin = strrpos( $datos, "</Ds_Order>" );
@@ -254,7 +240,7 @@
 		}
 
 		/******  Notificaciones SOAP SALIDA ******/
-		function createMerchantSignatureNotifSOAPResponse( $key, $datos, $numPedido ) {
+		public function createMerchantSignatureNotifSOAPResponse( $key, $datos, $numPedido ) {
 			// Se decodifica la clave Base64
 			$key = $this->decodeBase64( $key );
 			// Se obtienen los datos del Request
@@ -268,7 +254,7 @@
 			return $this->encodeBase64( $res );
 		}
 
-		function getResponseNotifSOAP( $datos ) {
+		public function getResponseNotifSOAP( $datos ) {
 			$posReqIni = strrpos( $datos, "<Response" );
 			$posReqFin = strrpos( $datos, "</Response>" );
 			$tamReqFin = strlen( "</Response>" );

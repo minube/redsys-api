@@ -1,45 +1,5 @@
 <?php
-	/*************************************************************
-	 *
-	 *    SHA256 static class for PHP4
-	 *    implemented by feyd _at_ devnetwork .dot. net
-	 *    specification from http://csrc.nist.gov/cryptval/shs/sha256-384-512.pdf
-	 *
-	 *    (c) Copyright 2005 Developer's Network. All rights reserved.
-	 *    This is licensed under the Lesser General Public License (LGPL)
-	 *    This library is free software; you can redistribute it and/or
-	 *    modify it under the terms of the GNU Lesser General Public
-	 *    License as published by the Free Software Foundation; either
-	 *    version 2.1 of the License, or (at your option) any later version.
-	 *
-	 *    This library is distributed in the hope that it will be useful,
-	 *    but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	 *    Lesser General Public License for more details.
-	 *
-	 *    You should have received a copy of the GNU Lesser General Public
-	 *    License along with this library; if not, write to the Free Software
-	 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	 *
-	 *    Thanks to CertainKey Inc. for providing some example outputs in Javascript
-	 *
-	 *----- Version 1.0.1 ----------------------------------------------------------
-	 *
-	 *    Syntax:
-	 *        string SHA256::hash( string message[, string format ])
-	 *
-	 *    Description:
-	 *        SHA256::hash() is a static function that must be called with `message`
-	 *        and optionally `format`. Possible values for `format` are:
-	 *        'bin'    binary string output
-	 *        'hex'    default; hexidecimal string output (lower case)
-	 *
-	 *        Failures return FALSE.
-	 *
-	 *    Usage:
-	 *        $hash = SHA256::hash('string to hash');
-	 *
-	 ************************************************************** */
+	namespace Redsys\Hash;
 
 
 	// hashing class state and storage object. Abstract base class only.
@@ -58,28 +18,28 @@
 		//	'hex' - hexidecimal (default, medium)
 
 		// perform a hash on a string
-		function hash( $str, $mode = 'hex' ) {
+		public function hash( $str, $mode = 'hex' ) {
 			trigger_error( 'hash::hash() NOT IMPLEMENTED', E_USER_WARNING );
 
 			return false;
 		}
 
 		// chop the resultant hash into $length byte chunks
-		function hashChunk( $str, $length, $mode = 'hex' ) {
+		public function hashChunk( $str, $length, $mode = 'hex' ) {
 			trigger_error( 'hash::hashChunk() NOT IMPLEMENTED', E_USER_WARNING );
 
 			return false;
 		}
 
 		// perform a hash on a file
-		function hashFile( $filename, $mode = 'hex' ) {
+		public function hashFile( $filename, $mode = 'hex' ) {
 			trigger_error( 'hash::hashFile() NOT IMPLEMENTED', E_USER_WARNING );
 
 			return false;
 		}
 
 		// chop the resultant hash into $length byte chunks
-		function hashChunkFile( $filename, $length, $mode = 'hex' ) {
+		public function hashChunkFile( $filename, $length, $mode = 'hex' ) {
 			trigger_error( 'hash::hashChunkFile() NOT IMPLEMENTED', E_USER_WARNING );
 
 			return false;
@@ -96,7 +56,7 @@
 		// padded data
 		var $chunks = null;
 
-		function SHA256Data( $str ) {
+		public function SHA256Data( $str ) {
 			$M = strlen( $str );  // number of bytes
 			$L1 = ( $M >> 28 ) & 0x0000000F;  // top order bits
 			$L2 = $M << 3;  // number of bits
@@ -134,7 +94,7 @@
 
 	// static class. Access via SHA256::hash()
 	class SHA256 extends hash {
-		function hash( $str, $mode = 'hex' ) {
+		public function hash( $str, $mode = 'hex' ) {
 			static $modes = array(
 				'hex',
 				'bin',
@@ -169,7 +129,7 @@
 
 		// 32-bit summation
 
-		function compute( &$hashData ) {
+		public function compute( &$hashData ) {
 			static $vars = 'abcdefgh';
 			static $K = null;
 
@@ -304,7 +264,7 @@
 
 		// compute the hash
 
-		function sum() {
+		public function sum() {
 			$T = 0;
 			for ( $x = 0, $y = func_num_args(); $x < $y; $x++ ) {
 				// argument
@@ -333,7 +293,7 @@
 
 		// set up the display of the hash in hex.
 
-		function hashHex( &$hashData ) {
+		public function hashHex( &$hashData ) {
 			$str = '';
 
 			reset( $hashData->hash );
@@ -346,7 +306,7 @@
 
 
 		// set up the output of the hash in binary
-		function hashBin( &$hashData ) {
+		public function hashBin( &$hashData ) {
 			$str = '';
 
 			reset( $hashData->hash );

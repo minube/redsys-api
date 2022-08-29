@@ -1,6 +1,8 @@
 {
   "name": "redsys-api",
-  "version": "1.0.0",
-  "dependencies": {
+  "version": "dev-master",
+  "type": "library",
+  "require": {
+    "php": ">=5.3.2"
   }
 }

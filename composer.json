@@ -1,5 +1,5 @@
 {
-  "name": "redsys-api",
+  "name": "minube/redsys-api",
   "version": "dev-master",
   "require": {
     "php": ">=5.3.2"
